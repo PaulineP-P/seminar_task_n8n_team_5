@@ -93,7 +93,7 @@
           "parameters": [
             {
               "name": "Authorization",
-              "value": "Bearer YOUR_HF_TOKEN_HERE"
+              "value": "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"
             },
             {
               "name": "Content-Type",
