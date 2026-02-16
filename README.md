@@ -11,8 +11,6 @@
 Pure Python implementation using **OpenRouter API** with **Gemini 2.5 Flash Lite**.  
 Single script handles: data loading → LLM analysis → 4‑component scoring → backtest → CSV export.
 
-**Strategy:** Conservative, capital‑preserving, 4‑component linear model.
-
 **Optimization:** Weights tuned via `scipy.optimize.differential_evolution` (`optimize.py`).
 
 ---
@@ -24,8 +22,6 @@ Single script handles: data loading → LLM analysis → 4‑component scoring �
 - **Output (JSON):**  
   `sentiment_score` (-1..1), `market_mood`, `trend_strength`, `reversal_probability`,  
   `risk_level`, `recommended_action`, `confidence`, `reasoning`
-
-> 💡 On days without news (~93% of rows), the LLM relies purely on technicals.
 
 ---
 
@@ -54,9 +50,6 @@ IF score ≥ 3.58 → BUY
 IF score ≤ 4.75 → SELL
 IF RSI > 75 → SELL (emergency)
 ELSE → HOLD
-
-
-> ℹ️ `buy_thresh (3.58) < sell_thresh (4.75)` creates a bearish bias – only strongly positive signals trigger buys.
 
 ### Risk Management
 - **Extreme risk override** (LLM)
@@ -87,4 +80,3 @@ ELSE → HOLD
 ├── optimize.py # weight optimizer (differential evolution)
 ├── trades.csv # generated trade log (created on run)
 ├── workflow.html # pipeline visualization
-└── llm_cache.json # cached LLM responses (!!!created on first run)
