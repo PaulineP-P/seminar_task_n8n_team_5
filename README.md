@@ -74,9 +74,9 @@ ELSE → HOLD
 ## 🗂️ File Structure
 
 ├── README.md 
-├── features.csv # market data (513 rows, 10 coins)
-├── news.csv # news headlines (50 articles)
-├── main.py # full pipeline (LLM + scoring + backtest)
+├── features.csv # market data 
+├── news.csv # news headlines
+├── main.py # 
 ├── optimize.py # weight optimizer (differential evolution)
 ├── trades.csv # generated trade log 
 ├── workflow.html # pipeline visualization
