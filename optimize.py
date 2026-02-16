@@ -1,5 +1,5 @@
 """
-🌸 V3 TUNING · 4‑COMPONENT LINEAR MODEL
+🌸 OPTIMIZER · 4‑COMPONENT LINEAR MODEL
 ============================================
 Optimized via differential_evolution
 Fewer features = less overfitting
@@ -17,7 +17,7 @@ TRANSACTION_FEE = 0.001       # 0.1% per trade
 # 📦 LOAD CACHED LLM RESPONSES
 # ============================================
 # why cache? 513 api calls × 3 retries = ~30min runtime
-# cache.json stores llm outputs + indicators
+# llm_cache.json stores llm outputs + indicators
 with open("llm_cache.json") as f:
     cache = json.load(f)
 
@@ -188,7 +188,7 @@ def evaluate(params_vec):
 # 🎯 OPTIMIZATION SETUP
 # ============================================
 print("\n" + "="*70)
-print("🌸 V3 OPTIMIZATION · 4‑COMPONENT LINEAR MODEL")
+print("🌸 OPTIMIZER · 4‑COMPONENT LINEAR MODEL")
 print("="*70)
 print("\n📊 parameter bounds:")
 print("   w_sentiment :  5 .. 50  (llm sentiment weight)")
