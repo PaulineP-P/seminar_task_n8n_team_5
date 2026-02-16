@@ -1,7 +1,7 @@
 """
 🌸 CRYPTO TRADING BOT · 4-COMPONENT LINEAR SCORING
 ======================================================
-Uses cached LLM analysis + optimized weights (from tune_v3.py)
+Uses cached LLM analysis + optimized weights (from optimize.py)
 Features: sentiment, RSI, Bollinger Bands, LLM action
 """
 
@@ -22,16 +22,16 @@ OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
 MODEL = "google/gemini-2.5-flash-lite"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
 
-# # input/output files
-FEATURES_CSV = "crypto_features_3months.csv"
-NEWS_CSV = "crypto_news_3months.csv"
-OUTPUT_CSV = "trades_log.csv"
+# # input/output files (simplified names)
+FEATURES_CSV = "features.csv"        # renamed from crypto_features_3months.csv
+NEWS_CSV = "news.csv"                 # renamed from crypto_news_3months.csv
+OUTPUT_CSV = "trades.csv"              # renamed from trades_log.csv
 
 # # backtest settings
 STARTING_CAPITAL = 10000
 TRANSACTION_FEE = 0.001  # 0.1%
 
-# # OPTIMIZED WEIGHTS (from tune_v3.py)
+# # OPTIMIZED WEIGHTS (from optimize.py)
 # # these maximize sharpe ratio on historical data
 W_SENTIMENT = 17.9413   # llm sentiment dominates
 W_RSI = 2.2901          # rsi adds small signal
