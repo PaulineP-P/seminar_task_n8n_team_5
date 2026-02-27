@@ -11,24 +11,34 @@ import math
 import time
 import pandas as pd
 import requests
-import asyncio
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dotenv import load_dotenv
 from datetime import datetime
 
+# Загружаем переменные из .env файла
 load_dotenv()
 
-# 💗 CONFIGURATION (optimized by differential evolution)
+# 💗 CONFIGURATION (из .env файла)
 # ============================================================
-OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY", "")
+OPENROUTER_API_KEY = os.getenv("OPENROUTER_API_KEY")
+if not OPENROUTER_API_KEY:
+    print("❌ ОШИБКА: OPENROUTER_API_KEY не найден в .env файле!")
+    print("📝 Добавьте строку: OPENROUTER_API_KEY=ваш_ключ_от_openrouter")
+    exit(1)
+
+# Telegram Configuration (из .env файла)
+TELEGRAM_BOT_TOKEN = os.getenv("TELEGRAM_BOT_TOKEN")
+TELEGRAM_CHAT_ID = os.getenv("TELEGRAM_CHAT_ID")
+TELEGRAM_ENABLED = bool(TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID)  # Автоматически включаем, если есть токен и chat_id
+SEND_ONLY_SIGNALS = True  # Отправлять только buy/sell сигналы
+
+if TELEGRAM_ENABLED:
+    print(f"🤖 Telegram бот настроен: Chat ID = {TELEGRAM_CHAT_ID}")
+else:
+    print("⚠️ Telegram уведомления отключены (не указан TELEGRAM_BOT_TOKEN или TELEGRAM_CHAT_ID)")
+
 MODEL = "google/gemini-2.5-flash-lite"
 API_URL = "https://openrouter.ai/api/v1/chat/completions"
-
-# Telegram Configuration
-TELEGRAM_BOT_TOKEN = "8645012892:AAEv9JLyi3tSPOcyxQitJrBM4mz5Swzi3OQ"
-TELEGRAM_CHAT_ID = "123456789"
-TELEGRAM_ENABLED = True
-SEND_ONLY_SIGNALS = True  # Отправлять только buy/sell сигналы
 
 # input/output files
 FEATURES_CSV = "features.csv"
@@ -455,8 +465,8 @@ Win Rate: {win_rate:.1f}%
 Total Trades: {len(trade_results)}
 Final Value: ${pv['value'].iloc[-1]:.2f}"""
                 bot.send_message(summary)
-            except:
-                pass
+            except Exception as e:
+                print(f"   ⚠️ Could not send Telegram summary: {e}")
         
         return {
             "sharpe": sharpe, 
@@ -564,14 +574,8 @@ def main():
             }
             results.append(result)
             
-            # Отправка в Telegram для кэшированных данных
-            if telegram_bot and TELEGRAM_ENABLED and decision in ['buy', 'sell']:
-                try:
-                    # Нужно восстановить row из cache или features
-                    # Для простоты пропускаем, но в реальности нужно загрузить features
-                    pass
-                except:
-                    pass
+            # Для кэшированных данных тоже можем отправлять уведомления
+            # Но для этого нужны полные данные строки, поэтому пропускаем
     else:
         # First run: call LLM API for every row
         print("\n🆕 no cache found - calling LLM API (this will take ~30min)...")
@@ -647,12 +651,12 @@ def main():
     print(f"\n✨ completed in {elapsed:.1f}s")
     
     # Final Telegram message
-    if telegram_bot:
+    if telegram_bot and metrics:
         telegram_bot.send_message(
             f"✅ <b>Analysis Complete</b>\n"
             f"⏱️ Time: {elapsed:.1f}s\n"
             f"📊 Signals: {buy_c} buys, {sell_c} sells\n"
-            f"💰 Sharpe: {metrics['sharpe']:.4f}" if metrics else "No trades"
+            f"💰 Sharpe: {metrics['sharpe']:.4f}"
         )
     
     return metrics
